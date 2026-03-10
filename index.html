@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE ARCHIVE - RPG Inventory</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #030303; color: #00ff9f; font-family: 'Share Tech Mono', monospace; overflow: hidden; }
+        .neon-border { box-shadow: 0 0 10px #00ff9f, inset 0 0 5px #00ff9f; border: 1px solid #00ff9f; }
+        .slot { width: 70px; height: 70px; background: rgba(0,255,159,0.05); border: 1px solid #1a1a1a; transition: 0.2s; }
+        .slot:hover { border-color: #00ff9f; box-shadow: 0 0 10px #00ff9f; cursor: pointer;}
+        .rarity-common { color: #888; text-shadow: none; }
+        .rarity-rare { color: #0070dd; text-shadow: 0 0 5px #0070dd; }
+        .rarity-legendary { color: #ff8000; text-shadow: 0 0 5px #ff8000; }
+        .active-tab { background-color: rgba(0,255,159,0.2); border-bottom: 2px solid #00ff9f; }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+</head>
+<body class="p-2 h-screen flex flex-col">
+
+    <header class="text-center mb-3">
+        <h1 class="text-xl font-bold tracking-widest uppercase" style="text-shadow: 0 0 5px #00ff9f;">System::Inventory // Archive_01</h1>
+        <p class="text-[9px] opacity-60">SISTEMA DI SIMULAZIONE POSSESSO V.2.0</p>
+    </header>
+
+    <div class="relative flex-grow flex justify-center items-center mb-3 neon-border bg-black" id="charArea">
+        <div class="absolute inset-0 opacity-20 bg-cover bg-center" style="background-image: url('https://i.imgur.com/k6R2T2B.png'); filter: grayscale(100%)"></div>
+        
+        <div class="absolute left-4 top-1/4 flex flex-col gap-3">
+            <div class="slot flex items-center justify-center text-xs opacity-40">Head</div>
+            <div class="slot flex items-center justify-center text-xs opacity-40">Torso</div>
+        </div>
+        <div class="absolute right-4 top-1/4 flex flex-col gap-3">
+            <div class="slot flex items-center justify-center text-xs opacity-40">Acc</div>
+            <div class="slot flex items-center justify-center text-xs opacity-40">Gear</div>
+        </div>
+
+        <img src="https://i.imgur.com/k6R2T2B.png" class="h-[80%] z-10 relative" alt="Cyberpunk Character">
+        
+        <div class="absolute bottom-2 right-2 text-sm neon-border p-2 bg-black z-20">
+            SAVED: <span id="moneySaved" class="rarity-legendary">0</span> VC
+        </div>
+    </div>
+
+    <div class="flex border-b border-zinc-800 mb-2">
+        <button onclick="setCategory('outfits')" class="flex-1 text-center py-2 text-xs uppercase active-tab" id="tab-outfits">Outfits</button>
+        <button onclick="setCategory('accessories')" class="flex-1 text-center py-2 text-xs uppercase" id="tab-accessories">Accessories</button>
+        <button onclick="setCategory('gear')" class="flex-1 text-center py-2 text-xs uppercase" id="tab-gear">Gear</button>
+        <button onclick="setCategory('archive')" class="flex-1 text-center py-2 text-xs uppercase" id="tab-archive">Archive</button>
+    </div>
+
+    <div class="flex-grow overflow-y-auto p-1 bg-zinc-950 border border-zinc-800">
+        <div id="inventoryGrid" class="grid grid-cols-4 gap-2">
+            </div>
+    </div>
+
+    <button onclick="showAddForm()" class="fixed bottom-16 right-4 p-4 rounded-full bg-green-900 neon-border z-30">+</button>
+
+    <div id="addForm" class="fixed inset-0 bg-black bg-opacity-90 z-50 p-4 hidden flex-col gap-3">
+        <h2 class="text-lg uppercase">Acquisisci Nuovo Loot</h2>
+        <input type="text" id="itemName" placeholder="NOME ITEM..." class="bg-zinc-900 p-2 border border-zinc-700">
+        <input type="number" id="itemCost" placeholder="COSTO (VC)..." class="bg-zinc-900 p-2 border border-zinc-700">
+        <select id="itemRarity" class="bg-zinc-900 p-2 border border-zinc-700">
+            <option value="common" class="rarity-common">Common</option>
+            <option value="rare" class="rarity-rare">Rare</option>
+            <option value="legendary" class="rarity-legendary">Legendary</option>
+        </select>
+        <select id="itemCategory" class="bg-zinc-900 p-2 border border-zinc-700">
+            <option value="outfits">Outfit</option>
+            <option value="accessories">Accessory</option>
+            <option value="gear">Gear</option>
+        </select>
+        <input type="file" id="itemImage" accept="image/*" class="text-xs">
+        <div class="flex gap-2">
+            <button onclick="saveItem()" class="flex-1 bg-green-900 p-2">SALVA</button>
+            <button onclick="hideAddForm()" class="flex-1 bg-red-950 p-2">ANNULLA</button>
+        </div>
+    </div>
+
+    <script>
+        let currentCategory = 'outfits';
+        let items = JSON.parse(localStorage.getItem('rpg_inventory_V2') || '[]');
+
+        function saveItem() {
+            const name = document.getElementById('itemName').value;
+            const cost = parseFloat(document.getElementById('itemCost').value) || 0;
+            const rarity = document.getElementById('itemRarity').value;
+            const category = document.getElementById('itemCategory').value;
+            const fileInput = document.getElementById('itemImage');
+            
+            if (!name || !fileInput.files[0]) return alert("Dati incompleti");
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const item = { id: Date.now(), name, cost, rarity, category, image: e.target.result };
+                items.push(item);
+                localStorage.setItem('rpg_inventory_V2', JSON.stringify(items));
+                renderInventory();
+                hideAddForm();
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+
+        function renderInventory() {
+            const grid = document.getElementById('inventoryGrid');
+            const filteredItems = currentCategory === 'archive' ? items : items.filter(i => i.category === currentCategory);
+            let totalSaved = 0;
+            items.forEach(i => totalSaved += i.cost);
+            document.getElementById('moneySaved').innerText = totalSaved.toFixed(0);
+
+            grid.innerHTML = filteredItems.map(item => `
+                <div class="slot relative p-1 flex flex-col items-center group" onclick="deleteItem(${item.id})">
+                    <img src="${item.image}" class="h-10 w-10 object-contain mb-1 group-hover:opacity-50">
+                    <p class="text-[7px] uppercase truncate w-full text-center ${'rarity-'+item.rarity}">${item.name}</p>
+                    <p class="text-[6px] opacity-70">${item.cost} VC</p>
+                </div>
+            `).join('');
+        }
+
+        function setCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('button[id^="tab-"]').forEach(b => b.classList.remove('active-tab'));
+            document.getElementById('tab-'+cat).classList.add('active-tab');
+            renderInventory();
+        }
+
+        function deleteItem(id) { if(confirm("Eliminare definitivamente questo loot?")) { items = items.filter(i => i.id !== id); localStorage.setItem('rpg_inventory_V2', JSON.stringify(items)); renderInventory(); } }
+        function showAddForm() { document.getElementById('addForm').style.display = 'flex'; }
+        function hideAddForm() { document.getElementById('addForm').style.display = 'none'; }
+
+        window.onload = renderInventory;
+    </script>
+</body>
+</html>
