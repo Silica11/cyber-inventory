@@ -3,117 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THE ARCHIVE - Bio-Link V3</title>
+    <title>THE ARCHIVE - Bio-Link V3.1</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         body { background-color: #020202; color: #00ff9f; font-family: 'Share Tech Mono', monospace; overflow-x: hidden; }
         .neon-border { border: 1px solid #00ff9f; box-shadow: 0 0 10px rgba(0,255,159,0.3); }
-        .bar-bg { background: #111; height: 8px; border: 1px solid #333; width: 100px; position: relative; }
+        .bar-bg { background: #111; height: 8px; border: 1px solid #333; width: 80px; position: relative; }
         .bar-fill { height: 100%; transition: width 0.4s; }
         .slot { aspect-ratio: 1/1; background: rgba(0,255,159,0.03); border: 1px solid #1a1a1a; transition: 0.3s; }
-        .slot:active { transform: scale(0.95); }
         .rarity-common { border-bottom: 3px solid #666; }
-        .rarity-rare { border-bottom: 3px solid #0070dd; box-shadow: 0 5px 10px rgba(0,112,221,0.2); }
-        .rarity-legendary { border-bottom: 3px solid #ff8000; box-shadow: 0 5px 15px rgba(255,128,0,0.3); }
+        .rarity-rare { border-bottom: 3px solid #0070dd; }
+        .rarity-legendary { border-bottom: 3px solid #ff8000; box-shadow: 0 5px 15px rgba(255,128,0,0.2); }
         .modal { background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); display: none; }
         .active-tab { background: #00ff9f; color: #000; }
     </style>
 </head>
 <body class="p-4 flex flex-col min-h-screen">
 
-    <header class="grid grid-cols-2 gap-4 mb-6 p-2 border-b border-zinc-800">
+    <header class="grid grid-cols-2 gap-2 mb-4 p-2 border-b border-zinc-800">
         <div>
-            <h2 class="text-[10px] uppercase opacity-50">User_ID: Subject_01</h2>
-            <div class="text-lg font-bold">LEVEL <span id="lvlDisplay">1</span></div>
+            <h2 class="text-[9px] uppercase opacity-50">Net_ID: Kitsune</h2>
+            <div class="text-lg font-bold">LVL <span id="lvlDisplay">1</span></div>
         </div>
-        <div class="flex flex-col gap-2 items-end">
+        <div class="flex flex-col gap-1 items-end">
             <div class="flex items-center gap-2">
-                <span class="text-[9px]">VITA</span>
+                <span class="text-[8px]">HP</span>
                 <div class="bar-bg"><div id="hpBar" class="bar-fill bg-red-600" style="width: 80%"></div></div>
-                <button onclick="adjustStat('hp', -10)" class="text-[10px] bg-zinc-900 px-1 border border-zinc-700">-</button>
-                <button onclick="adjustStat('hp', 10)" class="text-[10px] bg-zinc-900 px-1 border border-zinc-700">+</button>
+                <button onclick="adjustStat('hp', 5)" class="text-[9px] bg-zinc-900 w-4 border border-zinc-700">+</button>
             </div>
             <div class="flex items-center gap-2">
-                <span class="text-[9px]">FAME</span>
+                <span class="text-[8px]">FOOD</span>
                 <div class="bar-bg"><div id="hungerBar" class="bar-fill bg-orange-500" style="width: 50%"></div></div>
-                <button onclick="adjustStat('hunger', -10)" class="text-[10px] bg-zinc-900 px-1 border border-zinc-700">-</button>
-                <button onclick="adjustStat('hunger', 10)" class="text-[10px] bg-zinc-900 px-1 border border-zinc-700">+</button>
+                <button onclick="adjustStat('hunger', 5)" class="text-[9px] bg-zinc-900 w-4 border border-zinc-700">+</button>
             </div>
             <div class="flex items-center gap-2">
-                <span class="text-[9px]">SONNO</span>
+                <span class="text-[8px]">REST</span>
                 <div class="bar-bg"><div id="sleepBar" class="bar-fill bg-blue-500" style="width: 30%"></div></div>
-                <button onclick="adjustStat('sleep', -10)" class="text-[10px] bg-zinc-900 px-1 border border-zinc-700">-</button>
-                <button onclick="adjustStat('sleep', 10)" class="text-[10px] bg-zinc-900 px-1 border border-zinc-700">+</button>
+                <button onclick="adjustStat('sleep', 5)" class="text-[9px] bg-zinc-900 w-4 border border-zinc-700">+</button>
             </div>
         </div>
     </header>
 
-    <main class="relative flex justify-center items-center mb-8 h-64 border border-zinc-900 bg-zinc-950 rounded-lg overflow-hidden">
+    <main class="relative flex justify-center items-center mb-6 h-80 border border-zinc-900 bg-zinc-950 rounded-lg overflow-hidden">
         <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle,_#00ff9f_1px,_transparent_1px)] bg-[size:20px_20px]"></div>
-        <img src="avatar.jpg" id="mainAvatar" class="h-full z-10 drop-shadow-[0_0_15px_rgba(0,255,159,0.4)]">
+        
+        <img src="avatar.jpg.png" id="mainAvatar" 
+             onerror="this.src='https://i.imgur.com/k6R2T2B.png'; console.log('Immagine locale non trovata, uso placeholder');"
+             class="h-full z-10 drop-shadow-[0_0_15px_rgba(0,255,159,0.4)] object-contain">
         
         <div class="absolute bottom-2 left-2 text-[10px] bg-black p-1 border border-zinc-800">
-            TOTAL_SAVED: <span id="totalSaved" class="text-orange-500">0</span> VC
+            SAVED: <span id="totalSaved" class="text-orange-500">0</span> VC
         </div>
-    </main>
+    </header>
 
     <nav class="flex gap-1 mb-4">
-        <button onclick="setTab('outfits')" id="t-outfits" class="flex-1 py-2 text-[10px] uppercase border border-zinc-800 active-tab">Outfits</button>
-        <button onclick="setTab('accessories')" id="t-accessories" class="flex-1 py-2 text-[10px] uppercase border border-zinc-800">Acc</button>
+        <button onclick="setTab('outfit')" id="t-outfit" class="flex-1 py-2 text-[10px] uppercase border border-zinc-800 active-tab">Outfit</button>
+        <button onclick="setTab('accessory')" id="t-accessory" class="flex-1 py-2 text-[10px] uppercase border border-zinc-800">Accessory</button>
         <button onclick="setTab('gear')" id="t-gear" class="flex-1 py-2 text-[10px] uppercase border border-zinc-800">Gear</button>
     </nav>
 
-    <div id="inventoryGrid" class="grid grid-cols-2 gap-4 pb-24">
-        </div>
+    <div id="inventoryGrid" class="grid grid-cols-2 gap-4 pb-24"></div>
 
-    <button onclick="document.getElementById('addModal').style.display='flex'" class="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-green-600 text-black text-3xl font-bold shadow-lg z-40">+</button>
-
-    <div id="detailModal" class="modal fixed inset-0 z-50 p-6 flex-col items-center justify-center">
-        <div class="w-full max-w-sm neon-border bg-black p-6 relative">
-            <button onclick="closeDetail()" class="absolute top-2 right-4 text-2xl">×</button>
-            <img id="detailImg" class="w-full h-64 object-contain mb-4 bg-zinc-900">
-            <h2 id="detailName" class="text-xl font-bold uppercase mb-1">Nome Item</h2>
-            <p id="detailRarity" class="text-[10px] uppercase mb-4">Rarity</p>
-            <div class="flex justify-between items-center border-t border-zinc-800 pt-4">
-                <span class="text-orange-500">VALORE: <span id="detailCost">0</span> VC</span>
-                <button id="deleteBtn" class="bg-red-900 text-[10px] px-4 py-2 uppercase">Elimina Loot</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="addModal" class="modal fixed inset-0 z-50 p-6 flex-col items-center justify-center">
-        <div class="w-full max-w-sm bg-zinc-900 p-6 border border-zinc-700">
-            <h2 class="mb-4 uppercase font-bold">New Acquisition</h2>
-            <input type="text" id="inName" placeholder="NOME OGGETTO" class="w-full bg-black p-3 mb-2 border border-zinc-800 text-sm">
-            <input type="number" id="inCost" placeholder="VALORE VC" class="w-full bg-black p-3 mb-2 border border-zinc-800 text-sm">
-            <select id="inRarity" class="w-full bg-black p-3 mb-2 border border-zinc-800 text-sm">
-                <option value="common">COMMON</option>
-                <option value="rare">RARE</option>
-                <option value="legendary">LEGENDARY</option>
-            </select>
-            <select id="inCat" class="w-full bg-black p-3 mb-4 border border-zinc-800 text-sm">
-                <option value="outfits">OUTFIT</option>
-                <option value="accessories">ACCESSORY</option>
-                <option value="gear">GEAR</option>
-            </select>
-            <input type="file" id="inImg" class="text-[10px] mb-4">
-            <div class="flex gap-2">
-                <button onclick="saveItem()" class="flex-1 bg-green-600 text-black py-3 font-bold">SALVA</button>
-                <button onclick="document.getElementById('addModal').style.display='none'" class="flex-1 bg-zinc-800 py-3">ANNULLA</button>
-            </div>
-        </div>
-    </div>
+    <button onclick="document.getElementById('addModal').style.display='flex'" class="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-green-600 text-black text-3xl shadow-lg z-40">+</button>
 
     <script>
+        // Logica aggiornata per categorie singolari
         let state = JSON.parse(localStorage.getItem('cyber_state')) || { hp: 80, hunger: 50, sleep: 30, lvl: 1 };
         let items = JSON.parse(localStorage.getItem('cyber_items')) || [];
-        let currentTab = 'outfits';
+        let currentTab = 'outfit';
 
         function adjustStat(stat, val) {
             state[stat] = Math.min(100, Math.max(0, state[stat] + val));
-            save();
-            renderStats();
+            save(); renderStats();
         }
 
         function save() {
@@ -126,29 +88,25 @@
             document.getElementById('hungerBar').style.width = state.hunger + '%';
             document.getElementById('sleepBar').style.width = state.sleep + '%';
             document.getElementById('lvlDisplay').innerText = state.lvl;
-            
             let total = 0; items.forEach(i => total += i.cost);
             document.getElementById('totalSaved').innerText = total;
-            state.lvl = Math.floor(total / 500) + 1; // Un livello ogni 500 VC risparmiati
+            state.lvl = Math.floor(total / 500) + 1;
         }
 
         function saveItem() {
             const file = document.getElementById('inImg').files[0];
-            if(!file) return alert("Manca la foto del loot!");
-            
+            if(!file) return alert("Upload Image!");
             const reader = new FileReader();
             reader.onload = (e) => {
-                const newItem = {
+                items.push({
                     id: Date.now(),
                     name: document.getElementById('inName').value,
                     cost: parseInt(document.getElementById('inCost').value) || 0,
                     rarity: document.getElementById('inRarity').value,
                     category: document.getElementById('inCat').value,
                     img: e.target.result
-                };
-                items.push(newItem);
-                save();
-                renderInventory();
+                });
+                save(); renderInventory();
                 document.getElementById('addModal').style.display='none';
             };
             reader.readAsDataURL(file);
@@ -175,25 +133,56 @@
             document.getElementById('detailRarity').innerText = item.rarity;
             document.getElementById('detailModal').style.display = 'flex';
             document.getElementById('deleteBtn').onclick = () => {
-                if(confirm("Distruggere questo item?")) {
+                if(confirm("Eliminare?")) {
                     items = items.filter(i => i.id !== id);
-                    save();
-                    renderInventory();
-                    closeDetail();
+                    save(); renderInventory(); closeDetail();
                 }
             };
         }
 
         function closeDetail() { document.getElementById('detailModal').style.display = 'none'; }
-
         function setTab(t) {
             currentTab = t;
             document.querySelectorAll('nav button').forEach(b => b.classList.remove('active-tab'));
             document.getElementById('t-'+t).classList.add('active-tab');
             renderInventory();
         }
-
         window.onload = () => { renderStats(); renderInventory(); };
     </script>
+
+    <div id="detailModal" class="modal fixed inset-0 z-50 p-6 flex-col items-center justify-center">
+        <div class="w-full max-w-sm neon-border bg-black p-6 relative">
+            <button onclick="closeDetail()" class="absolute top-2 right-4 text-2xl">×</button>
+            <img id="detailImg" class="w-full h-64 object-contain mb-4 bg-zinc-900">
+            <h2 id="detailName" class="text-xl font-bold uppercase mb-1"></h2>
+            <p id="detailRarity" class="text-[10px] uppercase mb-4"></p>
+            <div class="flex justify-between items-center border-t border-zinc-800 pt-4">
+                <span class="text-orange-500"><span id="detailCost">0</span> VC</span>
+                <button id="deleteBtn" class="bg-red-900 text-[8px] px-3 py-2 uppercase">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="addModal" class="modal fixed inset-0 z-50 p-6 flex-col items-center justify-center">
+        <div class="w-full max-w-sm bg-zinc-900 p-6 border border-zinc-700">
+            <input type="text" id="inName" placeholder="NOME ITEM" class="w-full bg-black p-3 mb-2 text-sm border border-zinc-800">
+            <input type="number" id="inCost" placeholder="VALORE VC" class="w-full bg-black p-3 mb-2 text-sm border border-zinc-800">
+            <select id="inRarity" class="w-full bg-black p-3 mb-2 text-sm border border-zinc-800">
+                <option value="common">COMMON</option>
+                <option value="rare">RARE</option>
+                <option value="legendary">LEGENDARY</option>
+            </select>
+            <select id="inCat" class="w-full bg-black p-3 mb-4 text-sm border border-zinc-800">
+                <option value="outfit">OUTFIT</option>
+                <option value="accessory">ACCESSORY</option>
+                <option value="gear">GEAR</option>
+            </select>
+            <input type="file" id="inImg" class="text-[10px] mb-4">
+            <div class="flex gap-2">
+                <button onclick="saveItem()" class="flex-1 bg-green-600 text-black py-3">SAVE</button>
+                <button onclick="document.getElementById('addModal').style.display='none'" class="flex-1 bg-zinc-800 py-3">BACK</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
