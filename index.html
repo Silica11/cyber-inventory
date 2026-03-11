@@ -19,14 +19,22 @@
         /* RARITÀ */
         .rarity-common { border-bottom: 3px solid #666; }
         .rarity-rare { border-bottom: 3px solid #0070dd; }
-        
-        /* GLITCH ANIMATION PER LEGENDARY */
-        @keyframes glitch-anim {
-            0% { clip-path: inset(10% 0 30% 0); transform: translate(-2px, 2px); }
-            20% { clip-path: inset(40% 0 10% 0); transform: translate(2px, -2px); }
-            40% { clip-path: inset(20% 0 50% 0); transform: translate(-1px, 1px); }
-            60% { clip-path: inset(80% 0 5% 0); transform: translate(1px, -1px); }
-            100% { clip-path: inset(10% 0 30% 0); transform: translate(-2px, 2px); }
+    
+        /* PULSAZIONE ARANCIONE PER LEGENDARY */
+@keyframes pulse-orange {
+    0% { filter: drop-shadow(0 0 5px #ff8000); transform: scale(1); }
+    50% { filter: drop-shadow(0 0 20px #ff8000); transform: scale(1.05); }
+    100% { filter: drop-shadow(0 0 5px #ff8000); transform: scale(1); }
+}
+
+.rarity-legendary { 
+    border-bottom: 3px solid #ff8000; 
+    background: rgba(255, 128, 0, 0.05); 
+}
+
+.rarity-legendary img { 
+    animation: pulse-orange 2s infinite ease-in-out; 
+}
         }
         .rarity-legendary { border-bottom: 3px solid #ff8000; box-shadow: 0 0 15px rgba(255,128,0,0.3); }
         .rarity-legendary img { animation: glitch-anim 2s infinite linear alternate-reverse; filter: drop-shadow(0 0 5px #ff8000); }
