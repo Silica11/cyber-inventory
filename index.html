@@ -184,15 +184,40 @@
         }
 
         function saveItem() {
-            const file = document.getElementById('inImg').files[0];
-            if(!file || !document.getElementById('inName').value) return alert("Missing data!");
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                items.push({ id: Date.now(), name: document.getElementById('inName').value, cost: parseInt(document.getElementById('inCost').value) || 0, rarity: document.getElementById('inRarity').value, category: document.getElementById('inCat').value, img: e.target.result });
-                save(); renderInventory(); closeAddModal(); updateLog("Nuovo loot archiviato.");
-            };
-            reader.readAsDataURL(file);
-        }
+    const file = document.getElementById('inImg').files[0];
+    const nameInput = document.getElementById('inName');
+    const costInput = document.getElementById('inCost');
+    const rarityInput = document.getElementById('inRarity');
+    const imgInput = document.getElementById('inImg');
+
+    if(!file || !nameInput.value) return alert("Dati mancanti!");
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        items.push({ 
+            id: Date.now(), 
+            name: nameInput.value, 
+            cost: parseInt(costInput.value) || 0, 
+            rarity: rarityInput.value, 
+            category: document.getElementById('inCat').value, 
+            img: e.target.result 
+        });
+
+        save(); 
+        renderInventory(); 
+
+        // --- RESET DEI CAMPI PER IL PROSSIMO INPUT ---
+        nameInput.value = '';
+        costInput.value = '';
+        imgInput.value = '';
+        rarityInput.selectedIndex = 0; // Torna su Common
+        // ---------------------------------------------
+
+        closeAddModal(); 
+        updateLog("Nuovo loot archiviato.");
+    };
+    reader.readAsDataURL(file);
+}
 
         function renderInventory() {
             const grid = document.getElementById('inventoryGrid');
