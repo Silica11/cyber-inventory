@@ -218,7 +218,28 @@
             document.getElementById('t-'+t).classList.add('active-tab'); 
             renderInventory(); 
         }
-        window.onload = () => { renderStats(); renderInventory(); };
+        window.onload = () => {
+    // 1. Carica i dati ma tieni i modali chiusi
+    renderStats();
+    renderInventory();
+    document.getElementById('addModal').style.display = 'none';
+    document.getElementById('detailModal').style.display = 'none';
+
+    // 2. Gestione Intro (2 secondi totali)
+    setTimeout(() => {
+        document.getElementById('loadBar').style.width = '100%';
+        setTimeout(() => {
+            document.getElementById('bioLock').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('bioLock').style.display = 'none';
+                updateLog('standard'); // Primo messaggio del log
+            }, 700);
+        }, 1300); // Sommato al delay precedente fa circa 2 secondi
+    }, 200);
+
+    // 3. Avvia i messaggi del log ogni 8 secondi
+    setInterval(() => updateLog('standard'), 8000);
+};
     </script>
 </body>
 </html>
