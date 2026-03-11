@@ -227,25 +227,36 @@
             renderInventory(); 
         }
 
-        window.onload = () => {
-            renderStats();
-            renderInventory();
-            
-            // Animazione Splash
-            setTimeout(() => {
-                document.getElementById('loadBar').style.width = '100%';
-                setTimeout(() => {
-                    document.getElementById('bioLock').style.opacity = '0';
-                    document.getElementById('appBody').style.opacity = '1';
-                    setTimeout(() => {
-                        document.getElementById('bioLock').style.display = 'none';
-                        updateLog();
-                    }, 800);
-                }, 2000);
-            }, 500);
+       window.onload = () => {
+    renderStats();
+    renderInventory();
 
-            setInterval(() => updateLog(), 10000);
-        };
+    // Avvio caricamento
+    setTimeout(() => {
+        const bar = document.getElementById('loadBar');
+        const percentText = document.getElementById('loadPercent');
+        bar.style.width = '100%';
+        
+        // Animazione numerica 0-100%
+        let count = 0;
+        let interval = setInterval(() => {
+            count++;
+            percentText.innerText = count + '%';
+            if(count >= 100) clearInterval(interval);
+        }, 20); // 20ms * 100 = 2 secondi totali
+
+        setTimeout(() => {
+            document.getElementById('bioLock').style.opacity = '0';
+            document.getElementById('appBody').style.opacity = '1';
+            setTimeout(() => {
+                document.getElementById('bioLock').style.display = 'none';
+                updateLog();
+            }, 800);
+        }, 2300); // Leggermente più lungo per far godere il 100%
+    }, 500);
+
+    setInterval(() => updateLog(), 10000);
+};
     </script>
 </body>
 </html>
