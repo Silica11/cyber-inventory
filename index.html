@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THE ARCHIVE - Bio-Link V4.0</title>
+    <title>THE ARCHIVE - Bio-Link V5.1</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
@@ -13,21 +13,10 @@
         .bar-fill { height: 100%; transition: width 0.4s; }
         
         /* SLOT FISSI E QUADRATI */
-        .slot { 
-            width: 100%; 
-            aspect-ratio: 1 / 1; 
-            background: rgba(0,255,159,0.02); 
-            border: 1px solid #1a1a1a; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            position: relative;
-        }
-        
+        .slot { width: 100%; aspect-ratio: 1 / 1; background: rgba(0,255,159,0.02); border: 1px solid #1a1a1a; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; position: relative; }
         .slot img { width: 80%; height: 80%; object-fit: contain; }
 
+        /* RARITÀ */
         .rarity-common { border-bottom: 3px solid #666; }
         .rarity-rare { border-bottom: 3px solid #0070dd; }
         
@@ -39,26 +28,14 @@
             60% { clip-path: inset(80% 0 5% 0); transform: translate(1px, -1px); }
             100% { clip-path: inset(10% 0 30% 0); transform: translate(-2px, 2px); }
         }
-
         .rarity-legendary { border-bottom: 3px solid #ff8000; box-shadow: 0 0 15px rgba(255,128,0,0.3); }
-        .rarity-legendary img { 
-            animation: glitch-anim 2s infinite linear alternate-reverse; 
-            filter: drop-shadow(0 0 5px #ff8000);
-        }
+        .rarity-legendary img { animation: glitch-anim 2s infinite linear alternate-reverse; filter: drop-shadow(0 0 5px #ff8000); }
         
         /* STILE LOG DI SISTEMA */
-        #systemLog {
-            background: rgba(0, 255, 159, 0.05);
-            border-left: 2px solid #00ff9f;
-            padding: 5px 10px;
-            font-size: 9px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            overflow: hidden;
-        }
+        #systemLog { background: rgba(0, 255, 159, 0.05); border-left: 2px solid #00ff9f; padding: 5px 10px; font-size: 9px; height: 30px; display: flex; align-items: center; overflow: hidden; }
         #logText::before { content: "> "; }
 
+        /* MODALI (Tasto sbloccato) */
         .modal { background: rgba(0,0,0,0.95); backdrop-filter: blur(8px); display: none; }
         .active-tab { background: #00ff9f; color: #000; box-shadow: 0 0 15px #00ff9f; }
     </style>
@@ -67,7 +44,7 @@
 
     <header class="flex justify-between items-start mb-4 p-2 border-b border-zinc-800">
         <div>
-            <h2 class="text-[8px] uppercase opacity-50">Subject: Sil_Kitsune</h2>
+            <h2 class="text-[8px] uppercase opacity-50">Net_ID: Kitsune</h2>
             <div class="text-xl font-bold">LVL <span id="lvlDisplay">1</span></div>
         </div>
         <div class="flex flex-col gap-2">
@@ -92,7 +69,25 @@
         </div>
     </header>
 
-    <div class="flex gap-2 mb-4 h-80">
+    <div id="avatarArea" class="flex gap-2 mb-4 h-80">
+        
+        <div id="bioMonitor" class="w-1/6 flex flex-col gap-2 items-center justify-center p-2 border border-zinc-900 bg-zinc-950 rounded-lg">
+            
+            <div class="text-center">
+                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExeWZ5ejpueXo5eXo5eXo5eXo5eXo5eXo5eXo5eXo5eXo5eZCZ2lmX3NlYXJjaD9xPXdpcmVmcmFtZSUyMGJyYWluJTIwZ2lmJmVwPXYxX2dpZnNfc2VhcmNoJmN0PWc/3o7TKM7neYlQYn_W9Q/giphy.gif" 
+                     class="w-12 h-12 grayscale brightness-[1.5] object-contain" alt="Neural Sync">
+                <span class="text-[6px] block opacity-40 uppercase">Neural_Sync</span>
+            </div>
+            
+            <div class="w-full h-px bg-zinc-800"></div>
+            
+            <div class="text-center">
+                <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExejBqOGR4c3MxeHd3cXhyODdkMXpxMXp5djNzNGdmNm9rZWNyNXBpZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ZKw0NDn10ljSE/giphy.gif" 
+                     class="w-12 h-6 grayscale brightness-[1.2] object-contain" alt="Heartbeat">
+                <span class="text-[6px] block opacity-40 uppercase">Heart_Rate</span>
+            </div>
+        </div>
+
         <div class="flex-grow relative border border-zinc-900 bg-zinc-950 rounded-lg overflow-hidden flex justify-center items-center">
             <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle,_#00ff9f_1px,_transparent_1px)] bg-[size:15px_15px]"></div>
             <img src="avatar.png" id="mainAvatar" onerror="this.src='https://i.imgur.com/k6R2T2B.png';" class="h-[85%] z-10 drop-shadow-[0_0_15px_rgba(0,255,159,0.3)] object-contain p-2">
@@ -102,24 +97,24 @@
         </div>
 
         <div class="flex flex-col gap-1 w-12">
-            <button onclick="setTab('outfit')" id="t-outfit" class="flex-1 text-[9px] border border-zinc-800 active-tab font-bold">OUTFIT</button>
-            <button onclick="setTab('bank')" id="t-bank" class="flex-1 text-[9px] border border-zinc-800 font-bold">BANK</button>
-            <button onclick="setTab('gear')" id="t-gear" class="flex-1 text-[9px] border border-zinc-800 font-bold">GEAR</button>
+            <button onclick="setTab('outfit')" id="t-outfit" class="flex-1 text-[9px] border border-zinc-800 active-tab font-bold uppercase">Outfit</button>
+            <button onclick="setTab('bank')" id="t-bank" class="flex-1 text-[9px] border border-zinc-800 font-bold uppercase">Bank</button>
+            <button onclick="setTab('accessory')" id="t-accessory" class="flex-1 text-[9px] border border-zinc-800 font-bold uppercase">ACC</button>
         </div>
     </div>
 
     <div id="systemLog" class="mb-4">
-        <span id="logText" class="tracking-tighter uppercase">Bio-Link Inizializzato...</span>
+        <span id="logText" class="tracking-tighter uppercase text-[8px] opacity-70">Sincronizzazione Bio-Link completata.</span>
     </div>
 
-    <div class="flex-grow">
+    <div class="flex-grow pb-24">
         <h3 class="text-[10px] opacity-30 uppercase mb-2 tracking-widest">Database_Items</h3>
-        <div id="inventoryGrid" class="grid grid-cols-3 gap-3 pb-24"></div>
+        <div id="inventoryGrid" class="grid grid-cols-3 gap-3"></div>
     </div>
 
     <button onclick="document.getElementById('addModal').style.display='flex'" class="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-green-600 text-black text-3xl shadow-2xl z-40 neon-border">+</button>
 
-    <div id="detailModal" class="modal fixed inset-0 z-50 p-6 items-center justify-center">
+    <div id="detailModal" class="modal fixed inset-0 z-50 p-6 flex items-center justify-center">
         <div class="w-full max-w-sm neon-border bg-black p-6 relative">
             <button onclick="closeDetail()" class="absolute top-2 right-4 text-2xl">×</button>
             <div class="w-full h-64 bg-zinc-950 border border-zinc-900 mb-4 flex items-center justify-center p-4">
@@ -134,9 +129,10 @@
         </div>
     </div>
 
-    <div id="addModal" class="modal fixed inset-0 z-50 p-6 items-center justify-center">
+    <div id="addModal" class="modal fixed inset-0 z-50 p-6 flex items-center justify-center">
         <div class="w-full max-w-sm bg-zinc-900 p-6 border border-zinc-700 shadow-2xl">
-            <input type="text" id="inName" placeholder="NOME ITEM" class="w-full bg-black p-3 mb-2 text-sm border border-zinc-800 outline-none">
+            <h2 class="mb-4 text-sm font-bold uppercase tracking-widest text-green-500">New Data Entry</h2>
+            <input type="text" id="inName" placeholder="NOME OGGETTO" class="w-full bg-black p-3 mb-2 text-sm border border-zinc-800 outline-none">
             <input type="number" id="inCost" placeholder="VALORE VC" class="w-full bg-black p-3 mb-2 text-sm border border-zinc-800 outline-none">
             <select id="inRarity" class="w-full bg-black p-3 mb-2 text-sm border border-zinc-800 outline-none">
                 <option value="common">COMMON</option>
@@ -146,7 +142,7 @@
             <select id="inCat" class="w-full bg-black p-3 mb-4 text-sm border border-zinc-800 outline-none">
                 <option value="outfit">OUTFIT</option>
                 <option value="bank">BANK</option>
-                <option value="gear">GEAR</option>
+                <option value="accessory">ACCESSORY</option>
             </select>
             <input type="file" id="inImg" class="text-[10px] mb-6">
             <div class="flex gap-2">
@@ -161,27 +157,8 @@
         let items = JSON.parse(localStorage.getItem('cyber_items')) || [];
         let currentTab = 'outfit';
 
-        const phrases = {
-            standard: ["Segnale stabile", "Kitsune online", "Nessuna intrusione", "Memoria ottimizzata", "Status: Silent Mode"],
-            save: ["Nuovo feticcio digitalizzato", "Risparmio VC confermato", "Item acquisito nel database"],
-            delete: ["Dati epurati", "Memoria liberata", "Loot rimosso dal server"],
-            critical: ["Attenzione: Risorse vitali basse!", "Ricarica Bio-Status richiesta!", "Segnali critici rilevati"]
-        };
-
-        function updateLog(type) {
-            const log = document.getElementById('logText');
-            const options = phrases[type];
-            log.innerText = options[Math.floor(Math.random() * options.length)];
-        }
-
-        function adjustStat(stat, val) { 
-            state[stat] = Math.min(100, Math.max(0, state[stat] + val)); 
-            if(state[stat] < 20) updateLog('critical');
-            save(); renderStats(); 
-        }
-
+        function adjustStat(stat, val) { state[stat] = Math.min(100, Math.max(0, state[stat] + val)); save(); renderStats(); }
         function save() { localStorage.setItem('cyber_state', JSON.stringify(state)); localStorage.setItem('cyber_items', JSON.stringify(items)); }
-
         function renderStats() {
             document.getElementById('hpBar').style.width = state.hp + '%';
             document.getElementById('hungerBar').style.width = state.hunger + '%';
@@ -194,13 +171,11 @@
 
         function saveItem() {
             const file = document.getElementById('inImg').files[0];
-            if(!file || !document.getElementById('inName').value) return alert("Dati mancanti!");
+            if(!file || !document.getElementById('inName').value) return alert("Missing data!");
             const reader = new FileReader();
             reader.onload = (e) => {
                 items.push({ id: Date.now(), name: document.getElementById('inName').value, cost: parseInt(document.getElementById('inCost').value) || 0, rarity: document.getElementById('inRarity').value, category: document.getElementById('inCat').value, img: e.target.result });
-                save(); renderInventory(); 
-                updateLog('save');
-                document.getElementById('addModal').style.display='none';
+                save(); renderInventory(); document.getElementById('addModal').style.display='none';
             };
             reader.readAsDataURL(file);
         }
@@ -224,12 +199,7 @@
             document.getElementById('detailCost').innerText = item.cost;
             document.getElementById('detailRarity').innerText = 'RANK: ' + item.rarity;
             document.getElementById('detailModal').style.display = 'flex';
-            document.getElementById('deleteBtn').onclick = () => { 
-                if(confirm("Purge data?")) { 
-                    items = items.filter(i => i.id !== id); 
-                    save(); renderInventory(); closeDetail(); updateLog('delete');
-                } 
-            };
+            document.getElementById('deleteBtn').onclick = () => { if(confirm("Purge data?")) { items = items.filter(i => i.id !== id); save(); renderInventory(); closeDetail(); } };
         }
 
         function closeDetail() { document.getElementById('detailModal').style.display = 'none'; }
@@ -240,12 +210,7 @@
             document.getElementById('t-'+t).classList.add('active-tab'); 
             renderInventory(); 
         }
-
-        window.onload = () => { 
-            renderStats(); 
-            renderInventory(); 
-            setInterval(() => updateLog('standard'), 8000); 
-        };
+        window.onload = () => { renderStats(); renderInventory(); };
     </script>
 </body>
 </html>
